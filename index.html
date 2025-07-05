@@ -31,6 +31,7 @@
             justify-content: center;
             padding: 20px;
             box-sizing: border-box;
+            overflow-y: scroll; /* Default scrollable */
         }
 
         .container {
@@ -42,6 +43,7 @@
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-medium);
             overflow: hidden;
+            position: relative; /* Added for language switcher positioning */
         }
 
         header {
@@ -92,6 +94,97 @@
 
         .contact-info .icon {
             font-size: 1.2em;
+        }
+
+        /* Language Switcher Styles */
+        .language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .lang-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--light-text-color);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 10px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .lang-button.active,
+        .lang-button:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        /* Popup Guide Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Pastikan di atas semua elemen */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            max-width: 500px;
+            text-align: center;
+            transform: translateY(-20px); /* Initial position for subtle animation */
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal-box {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-box h3 {
+            color: var(--primary-color);
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .modal-box p {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            color: var(--text-color);
+        }
+
+        .modal-box button {
+            background-color: var(--accent-color);
+            color: var(--light-text-color);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-box button:hover {
+            background-color: #2a7fb8;
         }
 
         .main-content {
@@ -366,16 +459,36 @@
                 padding-left: 25px;
                 margin-bottom: 8px;
             }
+            /* Language switcher responsive */
+            .language-switcher {
+                top: 10px;
+                right: 10px;
+            }
+            .lang-button {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+
+            /* Popup Guide responsive */
+            .modal-box {
+                margin: 20px; /* Add some margin on small screens */
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="language-switcher">
+            <button id="lang-id" class="lang-button active">ID</button>
+            <button id="lang-en" class="lang-button">EN</button>
+        </div>
+
         <header>
-            <h1>Rio Ramadhan</h1>
-            <p class="tagline">Fullstack Developer & Quality Assurance Engineer</p>
+            <h1 data-key="header_name">Rio Ramadhan</h1>
+            <p class="tagline" data-key="header_tagline">Fullstack Developer & Quality Assurance Engineer</p>
             <div class="contact-info">
-                <span><i class="fas fa-calendar-alt icon"></i> Bogor, 23 Januari 1998</span>
+                <span data-key="contact_dob"><i class="fas fa-calendar-alt icon"></i> Bogor, 23 Januari 1998</span>
                 <span><i class="fas fa-phone icon"></i> <a href="tel:+6282211965523">+6282211965523</a></span>
                 <span><i class="fas fa-envelope icon"></i> <a href="mailto:rioramadhan423@gmail.com">rioramadhan423@gmail.com</a></span>
                 <span><i class="fab fa-linkedin icon"></i> <a href="https://linkedin.com/in/rio-ramadhan-233a65169" target="_blank">linkedin.com/in/rio-ramadhan-233a65169</a></span>
@@ -385,192 +498,467 @@
         <div class="main-content">
             <div class="left-column">
                 <section>
-                    <h2>RINGKASAN PROFESIONAL</h2>
-                    <p>Profesional berpengalaman dengan latar belakang kuat sebagai Fullstack Developer dan Quality Assurance Engineer, berfokus pada peningkatan kualitas perangkat lunak dan efisiensi operasional. Memiliki keahlian dalam siklus pengembangan perangkat lunak (SDLC), perancangan dan pelaksanaan pengujian fungsional, pengujian performa, serta analisis bug. Mahir dalam penggunaan berbagai tools QA seperti Katalon, Selenium, K6, dan memiliki kompetensi dalam otomatisasi AI Workflow menggunakan n8n. Berkomitmen untuk memberikan solusi perangkat lunak yang stabil dan berkualitas tinggi.</p>
+                    <h2 data-key="summary_title">RINGKASAN PROFESIONAL</h2>
+                    <p data-key="summary_text">Profesional berpengalaman dengan latar belakang kuat sebagai Fullstack Developer dan Quality Assurance Engineer, berfokus pada peningkatan kualitas perangkat lunak dan efisiensi operasional. Memiliki keahlian dalam siklus pengembangan perangkat lunak (SDLC), perancangan dan pelaksanaan pengujian fungsional, pengujian performa, serta analisis bug. Mahir dalam penggunaan berbagai tools QA seperti Katalon, Selenium, K6, dan memiliki kompetensi dalam otomatisasi AI Workflow menggunakan n8n. Berkomitmen untuk memberikan solusi perangkat lunak yang stabil dan berkualitas tinggi.</p>
                 </section>
 
                 <section>
-                    <h2>PENGALAMAN KERJA</h2>
+                    <h2 data-key="experience_title">PENGALAMAN KERJA</h2>
 
                     <div class="experience-item">
-                        <h3>Quality Assurance Engineer</h3>
-                        <h4>PT. Completed Innovation Technology</h4>
-                        <span class="date-range">Februari 2024 - Februari 2025</span>
+                        <h3 data-key="exp1_position">Quality Assurance Engineer</h3>
+                        <h4 data-key="exp1_company">PT. Completed Innovation Technology</h4>
+                        <span class="date-range" data-key="exp1_date">Februari 2024 - Februari 2025</span>
                         <ul>
-                            <li>Merancang dan melaksanakan strategi pengujian komprehensif, mencakup functional test dan performance test untuk memastikan kualitas aplikasi.</li>
-                            <li>Berkolaborasi aktif dengan tim developer untuk perbaikan logika dan memberikan rekomendasi perbaikan kode yang efektif.</li>
-                            <li>Menggunakan tools utama: Katalon, K6, Selenium, case.io, ClickUp, dan memiliki pemahaman tentang Nest.js.</li>
+                            <li data-key="exp1_task1">Merancang dan melaksanakan strategi pengujian komprehensif, mencakup functional test dan performance test untuk memastikan kualitas aplikasi.</li>
+                            <li data-key="exp1_task2">Berkolaborasi aktif dengan tim developer untuk perbaikan logika dan memberikan rekomendasi perbaikan kode yang efektif.</li>
+                            <li data-key="exp1_task3">Menggunakan tools utama: Katalon, K6, Selenium, case.io, ClickUp, dan memiliki pemahaman tentang Nest.js.</li>
                         </ul>
                     </div>
 
                     <div class="experience-item">
-                        <h3>Fullstack Developer</h3>
-                        <h4>PT. Markit Digital Indonesia</h4>
-                        <span class="date-range">Desember 2020 - Desember 2023</span>
-                        <p>Berperan dalam pengembangan berbagai aplikasi berskala besar untuk lembaga pemerintahan, termasuk:</p>
+                        <h3 data-key="exp2_position">Fullstack Developer</h3>
+                        <h4 data-key="exp2_company">PT. Markit Digital Indonesia</h4>
+                        <span class="date-range" data-key="exp2_date">Desember 2020 - Desember 2023</span>
+                        <p data-key="exp2_desc">Berperan dalam pengembangan berbagai aplikasi berskala besar untuk lembaga pemerintahan, termasuk:</p>
                         <ul>
-                            <li><strong>Sistem Kerjasama (SIKERMA) Kemendikbud:</strong> Pengelolaan data kerjasama SMK dan Industri (Laravel, MySQL).</li>
-                            <li><strong>Sistem Manajemen Bangunan (SIMBA) Ditjenpas:</strong> Pengelolaan aset bangunan (Vue.js, Laravel, MySQL).</li>
-                            <li><strong>Sistem Manajemen Angkutan Elektronik (SIMAE) Dishub Kota Bogor:</strong> Integrasi dengan BSRE dan Bapenda (Vue.js, Laravel, REST API IDP, MySQL).</li>
-                            <li><strong>Broker Message Satellite Based KKP:</strong> Pengelolaan pesan satelit dari kapal (Vue.js, Laravel, REST API IDP, MySQL).</li>
-                            <li><strong>Aplikasi Kerjasama (APKERMA) Kemendikbudristek:</strong> Pengelolaan kerjasama pendidikan, kebudayaan, riset (Vue.js, Laravel, MySQL).</li>
+                            <li data-key="exp2_task1"><strong>Sistem Kerjasama (SIKERMA) Kemendikbud:</strong> Pengelolaan data kerjasama SMK dan Industri (Laravel, MySQL).</li>
+                            <li data-key="exp2_task2"><strong>Sistem Manajemen Bangunan (SIMBA) Ditjenpas:</strong> Pengelolaan aset bangunan (Vue.js, Laravel, MySQL).</li>
+                            <li data-key="exp2_task3"><strong>Sistem Manajemen Angkutan Elektronik (SIMAE) Dishub Kota Bogor:</strong> Integrasi dengan BSRE dan Bapenda (Vue.js, Laravel, REST API IDP, MySQL).</li>
+                            <li data-key="exp2_task4"><strong>Broker Message Satellite Based KKP:</strong> Pengelolaan pesan satelit dari kapal (Vue.js, Laravel, REST API IDP, MySQL).</li>
+                            <li data-key="exp2_task5"><strong>Aplikasi Kerjasama (APKERMA) Kemendikbudristek:</strong> Pengelolaan kerjasama pendidikan, kebudayaan, riset (Vue.js, Laravel, MySQL).</li>
                         </ul>
                     </div>
 
                     <div class="experience-item">
-                        <h3>Fullstack Developer (Proyek Kontrak)</h3>
-                        <h4>PT. Lichemindo</h4>
-                        <p>Membangun aplikasi pengelolaan dokumen pengujian laboratorium, dari pengajuan hingga publikasi.</p>
+                        <h3 data-key="exp3_position">Fullstack Developer (Proyek Kontrak)</h3>
+                        <h4 data-key="exp3_company">PT. Lichemindo</h4>
+                        <p data-key="exp3_desc">Membangun aplikasi pengelolaan dokumen pengujian laboratorium, dari pengajuan hingga publikasi.</p>
                         <ul>
-                            <li>Menggunakan Next.js, GoFiber, PostgreSQL.</li>
+                            <li data-key="exp3_task1">Menggunakan Next.js, GoFiber, PostgreSQL.</li>
                         </ul>
                     </div>
 
                     <div class="experience-item">
-                        <h3>Fullstack Developer (Proyek Kontrak)</h3>
-                        <h4>PT. Agrivest Global Group</h4>
+                        <h3 data-key="exp4_position">Fullstack Developer (Proyek Kontrak)</h3>
+                        <h4 data-key="exp4_company">PT. Agrivest Global Group</h4>
                         <ul>
-                            <li>Mengembangkan aplikasi CRM untuk memfasilitasi proses penjualan dan pemasaran.</li>
-                            <li>Menggunakan GoFiber, Object Storage, Next.js, Flask, PostgreSQL.</li>
+                            <li data-key="exp4_task1">Mengembangkan aplikasi CRM untuk memfasilitasi proses penjualan dan pemasaran.</li>
+                            <li data-key="exp4_task2">Menggunakan GoFiber, Object Storage, Next.js, Flask, PostgreSQL.</li>
                         </ul>
                     </div>
                 </section>
 
                 <section>
-                    <h2>PORTOFOLIO</h2>
+                    <h2 data-key="portfolio_title">PORTOFOLIO</h2>
                     <div class="portfolio-group">
-                        <h3>Dokumentasi & Otomatisasi QA (Quality Assurance)</h3>
+                        <h3 data-key="portfolio_group1_title">Dokumentasi & Otomatisasi QA (Quality Assurance)</h3>
                         <div class="portfolio-item">
-                            <h4>Cypress E2E Automation Testing</h4>
-                            <p class="project-description">Implementasi otomatisasi pengujian End-to-End (E2E) menggunakan Cypress, mencakup perancangan test case, penulisan skrip, dan pengelolaan data uji dengan Faker. Memastikan fungsionalitas aplikasi web secara menyeluruh.</p>
+                            <h4 data-key="portfolio1_title">Cypress E2E Automation Testing</h4>
+                            <p class="project-description" data-key="portfolio1_desc">Implementasi otomatisasi pengujian End-to-End (E2E) menggunakan Cypress, mencakup perancangan test case, penulisan skrip, dan pengelolaan data uji dengan Faker. Memastikan fungsionalitas aplikasi web secara menyeluruh.</p>
                             <ul>
-                                <li>Teknologi: Cypress, JavaScript, Faker, Page Object Model</li>
+                                <li data-key="portfolio1_tech">Teknologi: Cypress, JavaScript, Faker, Page Object Model</li>
                             </ul>
                             <div class="portfolio-links">
-                                <a href="https://gitlab.com/towel423/cypress-starterpack.git" target="_blank"><i class="fab fa-gitlab icon"></i> Repositori GitLab</a>
-                                <a href="https://drive.google.com/file/d/1fQ3W8le0qZR0Q_kJi9Z2zlzi2UIAOmP9/view?usp=sharing" target="_blank"><i class="fas fa-video icon"></i> Sample Video Test</a>
+                                <a href="https://gitlab.com/towel423/cypress-starterpack.git" target="_blank"><i class="fab fa-gitlab icon"></i> <span data-key="repo_link_text">Repositori GitLab</span></a>
+                                <a href="https://drive.google.com/file/d/1fQ3W8le0qZR0Q_kJi9Z2zlzi2UIAOmP9/view?usp=sharing" target="_blank"><i class="fas fa-video icon"></i> <span data-key="video_link_text">Sample Video Test</span></a>
                             </div>
                         </div>
                         <div class="portfolio-item">
-                            <h4>API Testing Automation (Newman/Postman)</h4>
-                            <p class="project-description">Implementasi dan pengelolaan skrip otomatisasi pengujian API menggunakan Newman dan Postman Collection, memastikan fungsionalitas dan kinerja API secara berkelanjutan.</p>
+                            <h4 data-key="portfolio2_title">API Testing Automation (Newman/Postman)</h4>
+                            <p class="project-description" data-key="portfolio2_desc">Implementasi dan pengelolaan skrip otomatisasi pengujian API menggunakan Newman dan Postman Collection, memastikan fungsionalitas dan kinerja API secara berkelanjutan.</p>
                             <ul>
-                                <li>Teknologi: Newman, Postman, JavaScript</li>
+                                <li data-key="portfolio2_tech">Teknologi: Newman, Postman, JavaScript</li>
                             </ul>
                             <div class="portfolio-links">
-                                <a href="https://gitlab.com/towel423/newman.git" target="_blank"><i class="fab fa-gitlab icon"></i> Repositori GitLab</a>
-                                 <a href="https://towel423.github.io/newman-report.github.io/" target="_blank"><i class="fas fa-chart-bar icon"></i> Newman Report</a>
+                                <a href="https://gitlab.com/towel423/newman.git" target="_blank"><i class="fab fa-gitlab icon"></i> <span data-key="repo_link_text">Repositori GitLab</span></a>
+                                 <a href="https://towel423.github.io/newman-report.github.io/" target="_blank"><i class="fas fa-chart-bar icon"></i> <span data-key="report_link_text">Newman Report</span></a>
                             </div>
                         </div>
                         <div class="portfolio-item">
-                            <h4>Performance Testing (k6)</h4>
-                            <p class="project-description">Pengujian performa API menggunakan k6, mencakup penyiapan skenario beban, implementasi logika tes yang kompleks (misalnya, chain requests, token management), dan generasi laporan kinerja interaktif.</p>
+                            <h4 data-key="portfolio3_title">Performance Testing (k6)</h4>
+                            <p class="project-description" data-key="portfolio3_desc">Pengujian performa API menggunakan k6, mencakup penyiapan skenario beban, implementasi logika tes yang kompleks (misalnya, chain requests, token management), dan generasi laporan kinerja interaktif.</p>
                             <ul>
-                                <li>Teknologi: k6, JavaScript, Node.js, k6-html-reporter</li>
+                                <li data-key="portfolio3_tech">Teknologi: k6, JavaScript, Node.js, k6-html-reporter</li>
                             </ul>
                             <div class="portfolio-links">
-                                <a href="https://gitlab.com/towel423/k6-performance-test" target="_blank"><i class="fab fa-gitlab icon"></i> Repositori GitLab</a>
-                                 <a href="https://towel423.github.io/k6-porto.github.io/" target="_blank"><i class="fas fa-chart-bar icon"></i> K6 Report</a>
+                                <a href="https://gitlab.com/towel423/k6-performance-test" target="_blank"><i class="fab fa-gitlab icon"></i> <span data-key="repo_link_text">Repositori GitLab</span></a>
+                                 <a href="https://towel423.github.io/k6-porto.github.io/" target="_blank"><i class="fas fa-chart-bar icon"></i> <span data-key="report_link_text">K6 Report</span></a>
                             </div>
                         </div>
                         <div class="portfolio-item">
-                            <h4>QA Manual Docs</h4>
-                            <p class="project-description">Sample pengujian manual, termasuk test plan, test case, dan laporan bug, yang digunakan untuk memastikan kualitas dan fungsionalitas aplikasi. Menunjukkan kemampuan dalam merancang dan melaksanakan strategi pengujian komprehensif.</p>
+                            <h4 data-key="portfolio4_title">QA Manual Docs</h4>
+                            <p class="project-description" data-key="portfolio4_desc">Sample pengujian manual, termasuk test plan, test case, dan laporan bug, yang digunakan untuk memastikan kualitas dan fungsionalitas aplikasi. Menunjukkan kemampuan dalam merancang dan melaksanakan strategi pengujian komprehensif.</p>
                             <div class="portfolio-links">
-                                <a href="https://drive.google.com/drive/folders/1P0CTdaqzJZU1A3AI0-wtqkZ3PMHKFNbJ?usp=sharing" target="_blank"><i class="fas fa-file-alt icon"></i> Lihat Dokumentasi</a>
+                                <a href="https://drive.google.com/drive/folders/1P0CTdaqzJZU1A3AI0-wtqkZ3PMHKFNbJ?usp=sharing" target="_blank"><i class="fas fa-file-alt icon"></i> <span data-key="docs_link_text">Lihat Dokumentasi</span></a>
                             </div>
                         </div>
                     </div>
 
-                    <p style="font-size: 0.9em; margin-top: 20px; color: #777;">*Beberapa proyek bersifat internal perusahaan atau memiliki batasan akses. Tautan yang disediakan adalah contoh atau mengarah ke dokumentasi.</p>
+                    <p style="font-size: 0.9em; margin-top: 20px; color: #777;" data-key="portfolio_note">*Beberapa proyek bersifat internal perusahaan atau memiliki batasan akses. Tautan yang disediakan adalah contoh atau mengarah ke dokumentasi.</p>
                 </section>
                 </div>
 
             <div class="right-column">
                 <section>
-                    <h2>KEAHLIAN</h2>
+                    <h2 data-key="skills_title">KEAHLIAN</h2>
                     <div class="skills-category">
-                        <h3>Pengujian & QA:</h3>
-                        <div class="skills-list">
-                            <span class="skill-tag">Functional Testing</span>
-                            <span class="skill-tag">Performance Testing</span>
-                            <span class="skill-tag">Regression Testing</span>
-                            <span class="skill-tag">UAT (User Acceptance Testing)</span>
-                            <span class="skill-tag">Katalon</span>
-                            <span class="skill-tag">Selenium</span>
-                            <span class="skill-tag">K6</span>
-                            <span class="skill-tag">case.io</span>
-                            <span class="skill-tag">Test Case Design</span>
-                            <span class="skill-tag">Test Plan Development</span>
-                            <span class="skill-tag">Bug Reporting</span>
-                            <span class="skill-tag">Defect Tracking</span>
-                            <span class="skill-tag">AI Workflow (n8n)</span>
-                            <span class="skill-tag">API Testing</span>
-                            <span class="skill-tag">Newman</span>
-                            <span class="skill-tag">Postman</span>
-                            <span class="skill-tag">Cypress</span> </div>
+                        <h3 data-key="skills_qa_title">Pengujian & QA:</h3>
+                        <div class="skills-list" id="qa-skills-list">
+                            </div>
                     </div>
                     <div class="skills-category">
-                        <h3>Pengembangan & Teknologi:</h3>
-                        <div class="skills-list">
-                            <span class="skill-tag">PHP</span>
-                            <span class="skill-tag">JavaScript</span>
-                            <span class="skill-tag">Go</span>
-                            <span class="skill-tag">Laravel</span>
-                            <span class="skill-tag">Vue.js</span>
-                            <span class="skill-tag">Next.js</span>
-                            <span class="skill-tag">Flask</span>
-                            <span class="skill-tag">GoFiber</span>
-                            <span class="skill-tag">MySQL</span>
-                            <span class="skill-tag">PostgreSQL</span>
-                            <span class="skill-tag">ClickUp</span>
-                            <span class="skill-tag">REST API</span>
-                            <span class="skill-tag">BSRE</span>
-                            <span class="skill-tag">Bapenda</span>
-                        </div>
+                        <h3 data-key="skills_dev_title">Pengembangan & Teknologi:</h3>
+                        <div class="skills-list" id="dev-skills-list">
+                            </div>
                     </div>
                     <div class="skills-category">
-                        <h3>Soft Skills:</h3>
-                        <div class="skills-list">
-                            <span class="skill-tag">Komunikasi Efektif</span>
-                            <span class="skill-tag">Kerja Sama Tim</span>
-                            <span class="skill-tag">Pemecahan Masalah</span>
-                            <span class="skill-tag">Manajemen Waktu</span>
-                            <span class="skill-tag">Adaptabilitas Tinggi</span>
-                            <span class="skill-tag">Detail-Oriented</span>
-                        </div>
+                        <h3 data-key="skills_soft_title">Soft Skills:</h3>
+                        <div class="skills-list" id="soft-skills-list">
+                            </div>
                     </div>
                 </section>
 
                 <section>
-                    <h2>PENDIDIKAN</h2>
+                    <h2 data-key="education_title">PENDIDIKAN</h2>
                     <div class="education-item">
-                        <h3>Sarjana Terapan (D4) Teknik Informatika</h3>
-                        <p>Politeknik Negeri Jakarta</p>
-                        <p>CCIT - FTUI Network Administrator Professional (NAP)</p>
+                        <h3 data-key="edu1_degree">Sarjana Terapan (D4) Teknik Informatika</h3>
+                        <p data-key="edu1_uni">Politeknik Negeri Jakarta</p>
+                        <p data-key="edu1_program">CCIT - FTUI Network Administrator Professional (NAP)</p>
                     </div>
                 </section>
 
                 <section>
-                    <h2>SERTIFIKASI</h2>
+                    <h2 data-key="certifications_title">SERTIFIKASI</h2>
                     <div class="certification-item">
                         <ul>
-                            <li>IBM Data Analyst</li>
+                            <li data-key="cert1_name">IBM Data Analyst</li>
                         </ul>
                     </div>
                 </section>
 
                 <section>
-                    <h2>BAHASA</h2>
+                    <h2 data-key="languages_title">BAHASA</h2>
                     <div class="language-item">
                         <ul>
-                            <li>Bahasa Indonesia: Native</li>
-                            <li>Bahasa Inggris: Beginner</li>
+                            <li data-key="lang1_id">Bahasa Indonesia: Native</li>
+                            <li data-key="lang2_en">Bahasa Inggris: Beginner</li>
                         </ul>
                     </div>
                 </section>
             </div>
         </div>
     </div>
+
+    <div id="languageGuideModalOverlay" class="modal-overlay">
+        <div class="modal-box">
+            <h3 data-key="popup_title">Welcome!</h3>
+            <p data-key="popup_description">This CV has a language switch feature. Click the 'EN' button in the top right corner to switch to English, or 'ID' to return to Indonesian.</p>
+            <button id="closeGuideButton" data-key="popup_button">Got it!</button>
+        </div>
+    </div>
+
+    <script>
+        // Data terjemahan
+        const translations = {
+            id: {
+                header_name: "Rio Ramadhan",
+                header_tagline: "Fullstack Developer & Quality Assurance Engineer",
+                contact_dob: '<i class="fas fa-calendar-alt icon"></i> Bogor, 23 Januari 1998',
+                summary_title: "RINGKASAN PROFESIONAL",
+                summary_text: "Profesional berpengalaman dengan latar belakang kuat sebagai Fullstack Developer dan Quality Assurance Engineer, berfokus pada peningkatan kualitas perangkat lunak dan efisiensi operasional. Memiliki keahlian dalam siklus pengembangan perangkat lunak (SDLC), perancangan dan pelaksanaan pengujian fungsional, pengujian performa, serta analisis bug. Mahir dalam penggunaan berbagai tools QA seperti Katalon, Selenium, K6, dan memiliki kompetensi dalam otomatisasi AI Workflow menggunakan n8n. Berkomitmen untuk memberikan solusi perangkat lunak yang stabil dan berkualitas tinggi.",
+                experience_title: "PENGALAMAN KERJA",
+                exp1_position: "Quality Assurance Engineer",
+                exp1_company: "PT. Completed Innovation Technology",
+                exp1_date: "Februari 2024 - Februari 2025",
+                exp1_task1: "Merancang dan melaksanakan strategi pengujian komprehensif, mencakup functional test dan performance test untuk memastikan kualitas aplikasi.",
+                exp1_task2: "Berkolaborasi aktif dengan tim developer untuk perbaikan logika dan memberikan rekomendasi perbaikan kode yang efektif.",
+                exp1_task3: "Menggunakan tools utama: Katalon, K6, Selenium, case.io, ClickUp, dan memiliki pemahaman tentang Nest.js.",
+                exp2_position: "Fullstack Developer",
+                exp2_company: "PT. Markit Digital Indonesia",
+                exp2_date: "Desember 2020 - Desember 2023",
+                exp2_desc: "Berperan dalam pengembangan berbagai aplikasi berskala besar untuk lembaga pemerintahan, termasuk:",
+                exp2_task1: "<strong>Sistem Kerjasama (SIKERMA) Kemendikbud:</strong> Pengelolaan data kerjasama SMK dan Industri (Laravel, MySQL).",
+                exp2_task2: "<strong>Sistem Manajemen Bangunan (SIMBA) Ditjenpas:</strong> Pengelolaan aset bangunan (Vue.js, Laravel, MySQL).",
+                exp2_task3: "<strong>Sistem Manajemen Angkutan Elektronik (SIMAE) Dishub Kota Bogor:</strong> Integrasi dengan BSRE dan Bapenda (Vue.js, Laravel, REST API IDP, MySQL).",
+                exp2_task4: "<strong>Broker Message Satellite Based KKP:</strong> Pengelolaan pesan satelit dari kapal (Vue.js, Laravel, REST API IDP, MySQL).",
+                exp2_task5: "<strong>Aplikasi Kerjasama (APKERMA) Kemendikbudristek:</strong> Pengelolaan kerjasama pendidikan, kebudayaan, riset (Vue.js, Laravel, MySQL).",
+                exp3_position: "Fullstack Developer (Proyek Kontrak)",
+                exp3_company: "PT. Lichemindo",
+                exp3_desc: "Membangun aplikasi pengelolaan dokumen pengujian laboratorium, dari pengajuan hingga publikasi.",
+                exp3_task1: "Menggunakan Next.js, GoFiber, PostgreSQL.",
+                exp4_position: "Fullstack Developer (Proyek Kontrak)",
+                exp4_company: "PT. Agrivest Global Group",
+                exp4_task1: "Mengembangkan aplikasi CRM untuk memfasilitasi proses penjualan dan pemasaran.",
+                exp4_task2: "Menggunakan GoFiber, Object Storage, Next.js, Flask, PostgreSQL.",
+                portfolio_title: "PORTOFOLIO",
+                portfolio_group1_title: "Dokumentasi & Otomatisasi QA (Quality Assurance)",
+                portfolio1_title: "Cypress E2E Automation Testing",
+                portfolio1_desc: "Implementasi otomatisasi pengujian End-to-End (E2E) menggunakan Cypress, mencakup perancangan test case, penulisan skrip, dan pengelolaan data uji dengan Faker. Memastikan fungsionalitas aplikasi web secara menyeluruh.",
+                portfolio1_tech: "Teknologi: Cypress, JavaScript, Faker, Page Object Model",
+                portfolio2_title: "API Testing Automation (Newman/Postman)",
+                portfolio2_desc: "Implementasi dan pengelolaan skrip otomatisasi pengujian API menggunakan Newman dan Postman Collection, memastikan fungsionalitas dan kinerja API secara berkelanjutan.",
+                portfolio2_tech: "Teknologi: Newman, Postman, JavaScript",
+                portfolio3_title: "Performance Testing (k6)",
+                portfolio3_desc: "Pengujian performa API menggunakan k6, mencakup penyiapan skenario beban, implementasi logika tes yang kompleks (misalnya, chain requests, token management), dan generasi laporan kinerja interaktif.",
+                portfolio3_tech: "Teknologi: k6, JavaScript, Node.js, k6-html-reporter",
+                portfolio4_title: "QA Manual Docs",
+                portfolio4_desc: "Sample pengujian manual, termasuk test plan, test case, dan laporan bug, yang digunakan untuk memastikan kualitas dan fungsionalitas aplikasi. Menunjukkan kemampuan dalam merancang dan melaksanakan strategi pengujian komprehensif.",
+                repo_link_text: "Repositori GitLab",
+                video_link_text: "Sample Video Test",
+                report_link_text: "Report",
+                docs_link_text: "Lihat Dokumentasi",
+                portfolio_note: "*Beberapa proyek bersifat internal perusahaan atau memiliki batasan akses. Tautan yang disediakan adalah contoh atau mengarah ke dokumentasi.",
+                skills_title: "KEAHLIAN",
+                skills_qa_title: "Pengujian & QA:",
+                skills_qa_list: [
+                    "Functional Testing", "Performance Testing", "Regression Testing", "UAT (User Acceptance Testing)",
+                    "Katalon", "Selenium", "K6", "case.io", "Test Case Design", "Test Plan Development",
+                    "Bug Reporting", "Defect Tracking", "AI Workflow (n8n)", "API Testing",
+                    "Newman", "Postman", "Cypress"
+                ],
+                skills_dev_title: "Pengembangan & Teknologi:",
+                skills_dev_list: [
+                    "PHP", "JavaScript", "Go", "Laravel", "Vue.js", "Next.js", "Flask", "GoFiber",
+                    "MySQL", "PostgreSQL", "ClickUp", "REST API", "BSRE", "Bapenda"
+                ],
+                skills_soft_title: "Soft Skills:",
+                skills_soft_list: [
+                    "Komunikasi Efektif", "Kerja Sama Tim", "Pemecahan Masalah", "Manajemen Waktu",
+                    "Adaptabilitas Tinggi", "Detail-Oriented"
+                ],
+                education_title: "PENDIDIKAN",
+                edu1_degree: "Sarjana Terapan (D4) Teknik Informatika",
+                edu1_uni: "Politeknik Negeri Jakarta",
+                edu1_program: "CCIT - FTUI Network Administrator Professional (NAP)",
+                certifications_title: "SERTIFIKASI",
+                cert1_name: "IBM Data Analyst",
+                languages_title: "BAHASA",
+                lang1_id: "Bahasa Indonesia: Native",
+                lang2_en: "Bahasa Inggris: Beginner",
+                popup_title: "Selamat Datang!",
+                popup_description: "CV ini memiliki fitur pengganti bahasa. Klik tombol 'EN' di pojok kanan atas untuk beralih ke Bahasa Inggris, atau 'ID' untuk kembali ke Bahasa Indonesia.",
+                popup_button: "Mengerti!"
+            },
+            en: {
+                header_name: "Rio Ramadhan",
+                header_tagline: "Fullstack Developer & Quality Assurance Engineer",
+                contact_dob: '<i class="fas fa-calendar-alt icon"></i> Bogor, January 23, 1998',
+                summary_title: "PROFESSIONAL SUMMARY",
+                summary_text: "Experienced professional with a strong background as a Fullstack Developer and Quality Assurance Engineer, focused on improving software quality and operational efficiency. Proficient in the Software Development Life Cycle (SDLC), designing and executing functional testing, performance testing, and bug analysis. Skilled in using various QA tools such as Katalon, Selenium, K6, and competent in AI Workflow automation using n8n. Committed to delivering stable and high-quality software solutions.",
+                experience_title: "WORK EXPERIENCE",
+                exp1_position: "Quality Assurance Engineer",
+                exp1_company: "PT. Completed Innovation Technology",
+                exp1_date: "February 2024 - February 2025",
+                exp1_task1: "Designed and implemented comprehensive testing strategies, including functional and performance tests to ensure application quality.",
+                exp1_task2: "Actively collaborated with the development team for logic improvements and provided effective code improvement recommendations.",
+                exp1_task3: "Utilized key tools: Katalon, K6, Selenium, case.io, ClickUp, and possess understanding of Nest.js.",
+                exp2_position: "Fullstack Developer",
+                exp2_company: "PT. Markit Digital Indonesia",
+                exp2_date: "December 2020 - December 2023",
+                exp2_desc: "Involved in the development of various large-scale applications for government institutions, including:",
+                exp2_task1: "<strong>Cooperation System (SIKERMA) Kemendikbud:</strong> Management of Vocational School and Industry cooperation data (Laravel, MySQL).",
+                exp2_task2: "<strong>Building Management System (SIMBA) Ditjenpas:</strong> Management of building assets (Vue.js, Laravel, MySQL).",
+                exp2_task3: "<strong>Electronic Transportation Management System (SIMAE) Dishub Kota Bogor:</strong> Integration with BSRE and Bapenda (Vue.js, Laravel, REST API IDP, MySQL).",
+                exp2_task4: "<strong>Broker Message Satellite Based KKP:</strong> Management of satellite messages from ships (Vue.js, Laravel, REST API IDP, MySQL).",
+                exp2_task5: "<strong>Cooperation Application (APKERMA) Kemendikbudristek:</strong> Management of education, culture, research cooperation (Vue.js, Laravel, MySQL).",
+                exp3_position: "Fullstack Developer (Contract Project)",
+                exp3_company: "PT. Lichemindo",
+                exp3_desc: "Built a laboratory testing document management application, from submission to publication.",
+                exp3_task1: "Utilized Next.js, GoFiber, PostgreSQL.",
+                exp4_position: "Fullstack Developer (Contract Project)",
+                exp4_company: "PT. Agrivest Global Group",
+                exp4_task1: "Developed a CRM application to facilitate sales and marketing processes.",
+                exp4_task2: "Utilized GoFiber, Object Storage, Next.js, Flask, PostgreSQL.",
+                portfolio_title: "PORTFOLIO",
+                portfolio_group1_title: "QA Documentation & Automation",
+                portfolio1_title: "Cypress E2E Automation Testing",
+                portfolio1_desc: "Implemented End-to-End (E2E) automation testing using Cypress, including test case design, script writing, and test data management with Faker. Ensured comprehensive web application functionality.",
+                portfolio1_tech: "Technologies: Cypress, JavaScript, Faker, Page Object Model",
+                portfolio2_title: "API Testing Automation (Newman/Postman)",
+                portfolio2_desc: "Implemented and managed API testing automation scripts using Newman and Postman Collection, ensuring continuous API functionality and performance.",
+                portfolio2_tech: "Technologies: Newman, Postman, JavaScript",
+                portfolio3_title: "Performance Testing (k6)",
+                portfolio3_desc: "Performed API performance testing using k6, including setting up load scenarios, implementing complex test logic (e.g., chained requests, token management), and generating interactive performance reports.",
+                portfolio3_tech: "Technologies: k6, JavaScript, Node.js, k6-html-reporter",
+                portfolio4_title: "QA Manual Docs",
+                portfolio4_desc: "Sample manual testing documentation, including test plans, test cases, and bug reports, used to ensure application quality and functionality. Demonstrates ability in designing and executing comprehensive testing strategies.",
+                repo_link_text: "GitLab Repository",
+                video_link_text: "Sample Video Test",
+                report_link_text: "Report",
+                docs_link_text: "View Documentation",
+                portfolio_note: "*Some projects are internal to the company or have access restrictions. Provided links are examples or lead to documentation.",
+                skills_title: "SKILLS",
+                skills_qa_title: "Testing & QA:",
+                skills_qa_list: [
+                    "Functional Testing", "Performance Testing", "Regression Testing", "User Acceptance Testing (UAT)",
+                    "Katalon", "Selenium", "K6", "case.io", "Test Case Design", "Test Plan Development",
+                    "Bug Reporting", "Defect Tracking", "AI Workflow (n8n)", "API Testing",
+                    "Newman", "Postman", "Cypress"
+                ],
+                skills_dev_title: "Development & Technologies:",
+                skills_dev_list: [
+                    "PHP", "JavaScript", "Go", "Laravel", "Vue.js", "Next.js", "Flask", "GoFiber",
+                    "MySQL", "PostgreSQL", "ClickUp", "REST API", "BSRE", "Bapenda"
+                ],
+                skills_soft_title: "Soft Skills:",
+                skills_soft_list: [
+                    "Effective Communication", "Teamwork", "Problem Solving", "Time Management",
+                    "High Adaptability", "Detail-Oriented"
+                ],
+                education_title: "EDUCATION",
+                edu1_degree: "Applied Bachelor (D4) Informatics Engineering",
+                edu1_uni: "Politeknik Negeri Jakarta",
+                edu1_program: "CCIT - FTUI Network Administrator Professional (NAP)",
+                certifications_title: "CERTIFICATIONS",
+                cert1_name: "IBM Data Analyst",
+                languages_title: "LANGUAGES",
+                lang1_id: "Indonesian: Native",
+                lang2_en: "English: Beginner",
+                popup_title: "Welcome!",
+                popup_description: "This CV has a language switch feature. Click the 'EN' button in the top right corner to switch to English, or 'ID' to return to Indonesian.",
+                popup_button: "Got it!"
+            }
+        };
+
+        let currentLanguage = 'id'; // Bahasa default CV utama
+
+        // Fungsi untuk membuat skill tags
+        function createSkillTags(listId, skillsArray) {
+            const listElement = document.getElementById(listId);
+            if (listElement) {
+                listElement.innerHTML = ''; // Bersihkan list yang ada
+                skillsArray.forEach(skill => {
+                    const span = document.createElement('span');
+                    span.classList.add('skill-tag');
+                    span.textContent = skill;
+                    listElement.appendChild(span);
+                });
+            }
+        }
+
+        function updateContent() {
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (translations[currentLanguage][key]) {
+                    if (element.tagName === 'A' || key === 'contact_dob' || key.includes('_task') || key.includes('_tech') || key.includes('_link_text')) {
+                        element.innerHTML = translations[currentLanguage][key];
+                    } else {
+                        element.textContent = translations[currentLanguage][key];
+                    }
+                }
+            });
+
+            const dateRanges = document.querySelectorAll('.date-range');
+            dateRanges.forEach(element => {
+                const idText = element.getAttribute('data-key-id');
+                const enText = element.getAttribute('data-key-en');
+                if (currentLanguage === 'id' && idText) {
+                    element.textContent = idText;
+                } else if (currentLanguage === 'en' && enText) {
+                    element.textContent = enText;
+                }
+            });
+
+            document.querySelectorAll('.lang-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.getElementById(`lang-${currentLanguage}`).classList.add('active');
+            document.documentElement.lang = currentLanguage;
+
+            // --- Update Skill Tags Dynamically ---
+            createSkillTags('qa-skills-list', translations[currentLanguage].skills_qa_list);
+            createSkillTags('dev-skills-list', translations[currentLanguage].skills_dev_list);
+            createSkillTags('soft-skills-list', translations[currentLanguage].skills_soft_list);
+        }
+
+        function saveOriginalDateRanges() {
+            const dateRanges = document.querySelectorAll('.date-range');
+            dateRanges.forEach(element => {
+                const currentText = element.textContent;
+                if (currentText.includes('Februari 2024')) {
+                    element.setAttribute('data-key-id', currentText);
+                    element.setAttribute('data-key-en', 'February 2024 - February 2025');
+                } else if (currentText.includes('Desember 2020')) {
+                    element.setAttribute('data-key-id', currentText);
+                    element.setAttribute('data-key-en', 'December 2020 - December 2023');
+                }
+            });
+        }
+
+
+        document.getElementById('lang-id').addEventListener('click', () => {
+            currentLanguage = 'id';
+            updateContent();
+        });
+
+        document.getElementById('lang-en').addEventListener('click', () => {
+            currentLanguage = 'en';
+            updateContent();
+        });
+
+        // --- Logic for Popup Guide ---
+        const guideModalOverlay = document.getElementById('languageGuideModalOverlay');
+        const closeGuideButton = document.getElementById('closeGuideButton');
+
+        function showGuidePopup() {
+            if (localStorage.getItem('languageGuideShown')) {
+                return;
+            }
+
+            // --- PERUBAHAN DI SINI: Tetapkan teks popup ke bahasa Inggris ---
+            const popupElements = guideModalOverlay.querySelectorAll('[data-key]');
+            popupElements.forEach(element => {
+                const key = element.getAttribute('data-key');
+                // Selalu gunakan terjemahan bahasa Inggris untuk popup ini
+                if (translations.en[key]) {
+                    if (element.tagName === 'A' || key.includes('_task') || key.includes('_tech') || key.includes('_link_text')) {
+                        element.innerHTML = translations.en[key];
+                    } else {
+                        element.textContent = translations.en[key];
+                    }
+                }
+            });
+            // --- AKHIR PERUBAHAN ---
+
+            guideModalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Nonaktifkan scroll body
+            
+            localStorage.setItem('languageGuideShown', 'true');
+        }
+
+        function hideGuidePopup() {
+            guideModalOverlay.classList.remove('active');
+            document.body.style.overflow = 'scroll'; // Aktifkan kembali scroll body
+            setTimeout(() => {
+                guideModalOverlay.style.display = 'none'; 
+            }, 300); // Sesuaikan dengan durasi transisi CSS
+        }
+
+        closeGuideButton.addEventListener('click', hideGuidePopup);
+        // --- End Logic for Popup Guide ---
+
+
+        // Jalankan saat dokumen dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            saveOriginalDateRanges();
+            updateLanguageFromBrowser(); // Tambahkan ini untuk mendeteksi bahasa browser
+            updateContent(); // Inisialisasi konten CV dengan bahasa default (ID atau deteksi browser)
+
+            // Tampilkan popup guide saat halaman dimuat (jika belum pernah)
+            showGuidePopup();
+        });
+
+        // --- Fungsi baru untuk deteksi bahasa browser (opsional, tapi bagus) ---
+        function updateLanguageFromBrowser() {
+            const browserLanguage = navigator.language.split('-')[0]; // Ambil 'en' dari 'en-US'
+            if (browserLanguage && translations[browserLanguage]) {
+                currentLanguage = browserLanguage;
+            } else {
+                currentLanguage = 'id'; // Fallback ke ID jika bahasa browser tidak didukung
+            }
+        }
+    </script>
 </body>
 </html>
