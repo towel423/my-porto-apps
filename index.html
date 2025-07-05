@@ -821,9 +821,9 @@
             }
         };
 
-        let currentLanguage = 'id'; // Bahasa default CV utama
+        let currentLanguage = 'id'; // Akan diatur oleh getInitialLanguage()
 
-        // Fungsi untuk membuat skill tags
+        // Fungsi untuk membuat skill tags secara dinamis
         function createSkillTags(listId, skillsArray) {
             const listElement = document.getElementById(listId);
             if (listElement) {
@@ -837,11 +837,14 @@
             }
         }
 
+        // Fungsi untuk memperbarui semua teks di halaman berdasarkan currentLanguage
         function updateContent() {
             const elements = document.querySelectorAll('[data-key]');
             elements.forEach(element => {
                 const key = element.getAttribute('data-key');
                 if (translations[currentLanguage][key]) {
+                    // Gunakan innerHTML jika kontennya mungkin memiliki tag HTML (misal <strong>, <i>)
+                    // Jika tidak, gunakan textContent untuk keamanan
                     if (element.tagName === 'A' || key === 'contact_dob' || key.includes('_task') || key.includes('_tech') || key.includes('_link_text')) {
                         element.innerHTML = translations[currentLanguage][key];
                     } else {
@@ -850,6 +853,7 @@
                 }
             });
 
+            // Logika khusus untuk rentang tanggal
             const dateRanges = document.querySelectorAll('.date-range');
             dateRanges.forEach(element => {
                 const idText = element.getAttribute('data-key-id');
@@ -861,18 +865,22 @@
                 }
             });
 
+            // Perbarui styling tombol bahasa aktif
             document.querySelectorAll('.lang-button').forEach(button => {
                 button.classList.remove('active');
             });
             document.getElementById(`lang-${currentLanguage}`).classList.add('active');
+
+            // Perbarui atribut 'lang' pada tag <html> untuk aksesibilitas
             document.documentElement.lang = currentLanguage;
 
-            // --- Update Skill Tags Dynamically ---
+            // Perbarui Skill Tags Dynamically
             createSkillTags('qa-skills-list', translations[currentLanguage].skills_qa_list);
             createSkillTags('dev-skills-list', translations[currentLanguage].skills_dev_list);
             createSkillTags('soft-skills-list', translations[currentLanguage].skills_soft_list);
         }
 
+        // Menyimpan teks rentang tanggal asli saat inisialisasi
         function saveOriginalDateRanges() {
             const dateRanges = document.querySelectorAll('.date-range');
             dateRanges.forEach(element => {
@@ -887,15 +895,49 @@
             });
         }
 
+        // Fungsi baru: Menentukan bahasa awal dari URL atau browser
+        function getInitialLanguage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const langParam = urlParams.get('lang');
 
+            // Prioritas 1: Parameter 'lang' di URL
+            if (langParam && (langParam === 'id' || langParam === 'en')) {
+                return langParam;
+            }
+
+            // Prioritas 2: Bahasa browser
+            const browserLanguage = navigator.language.split('-')[0]; // Ambil 'en' dari 'en-US'
+            if (browserLanguage && translations[browserLanguage]) { // Cek apakah bahasa browser didukung
+                return browserLanguage;
+            }
+
+            // Prioritas 3: Bahasa default aplikasi
+            return 'id'; // Default ke Bahasa Indonesia jika tidak ada yang cocok
+        }
+
+        // Fungsi baru: Memperbarui URL tanpa memuat ulang halaman
+        function updateUrlLanguage(lang) {
+            const url = new URL(window.location.href);
+            if (lang === 'id') { // Jika bahasa default, hapus parameter untuk URL yang lebih bersih
+                url.searchParams.delete('lang');
+            } else {
+                url.searchParams.set('lang', lang);
+            }
+            // Menggunakan history.pushState untuk mengubah URL tanpa reload
+            history.pushState({ lang: lang }, '', url.toString());
+        }
+
+        // Event listeners untuk tombol pengganti bahasa
         document.getElementById('lang-id').addEventListener('click', () => {
             currentLanguage = 'id';
             updateContent();
+            updateUrlLanguage('id'); // Perbarui URL
         });
 
         document.getElementById('lang-en').addEventListener('click', () => {
             currentLanguage = 'en';
             updateContent();
+            updateUrlLanguage('en'); // Perbarui URL
         });
 
         // --- Logic for Popup Guide ---
@@ -907,11 +949,10 @@
                 return;
             }
 
-            // --- PERUBAHAN DI SINI: Tetapkan teks popup ke bahasa Inggris ---
+            // Tetapkan teks popup ke bahasa Inggris secara eksplisit
             const popupElements = guideModalOverlay.querySelectorAll('[data-key]');
             popupElements.forEach(element => {
                 const key = element.getAttribute('data-key');
-                // Selalu gunakan terjemahan bahasa Inggris untuk popup ini
                 if (translations.en[key]) {
                     if (element.tagName === 'A' || key.includes('_task') || key.includes('_tech') || key.includes('_link_text')) {
                         element.innerHTML = translations.en[key];
@@ -920,12 +961,11 @@
                     }
                 }
             });
-            // --- AKHIR PERUBAHAN ---
 
             guideModalOverlay.classList.add('active');
             document.body.style.overflow = 'hidden'; // Nonaktifkan scroll body
             
-            localStorage.setItem('languageGuideShown', 'true');
+            localStorage.setItem('languageGuideShown', 'true'); // Tandai sudah ditampilkan
         }
 
         function hideGuidePopup() {
@@ -943,22 +983,33 @@
         // Jalankan saat dokumen dimuat
         document.addEventListener('DOMContentLoaded', () => {
             saveOriginalDateRanges();
-            updateLanguageFromBrowser(); // Tambahkan ini untuk mendeteksi bahasa browser
-            updateContent(); // Inisialisasi konten CV dengan bahasa default (ID atau deteksi browser)
+
+            // Tentukan bahasa awal dari URL/browser/default
+            currentLanguage = getInitialLanguage();
+            updateContent(); // Muat konten dengan bahasa yang ditentukan
+
+            // Perbarui URL untuk mencerminkan bahasa awal yang dipilih (jika belum ada di URL)
+            const urlParams = new URLSearchParams(window.location.search);
+            const langParam = urlParams.get('lang');
+            if (!langParam || langParam !== currentLanguage) {
+                updateUrlLanguage(currentLanguage);
+            }
 
             // Tampilkan popup guide saat halaman dimuat (jika belum pernah)
             showGuidePopup();
         });
 
-        // --- Fungsi baru untuk deteksi bahasa browser (opsional, tapi bagus) ---
-        function updateLanguageFromBrowser() {
-            const browserLanguage = navigator.language.split('-')[0]; // Ambil 'en' dari 'en-US'
-            if (browserLanguage && translations[browserLanguage]) {
-                currentLanguage = browserLanguage;
-            } else {
-                currentLanguage = 'id'; // Fallback ke ID jika bahasa browser tidak didukung
+        // Tangani tombol back/forward browser agar URL perubahan bahasa berfungsi
+        window.addEventListener('popstate', (event) => {
+            const lang = event.state && event.state.lang;
+            if (lang && lang !== currentLanguage) {
+                currentLanguage = lang;
+                updateContent();
+            } else if (!lang && currentLanguage !== 'id') { // Jika kembali ke URL tanpa lang param, dan bukan ID
+                currentLanguage = 'id';
+                updateContent();
             }
-        }
+        });
     </script>
 </body>
 </html>
